@@ -1,0 +1,24 @@
+{
+  "name": "playwright-project",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "AuthP": "npx playwright test --grep \"@Authparency\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "",
+  "dependencies": {
+    "faker": "^6.6.6",
+    "nodemailer": "^6.10.0",
+    "playwright": "^1.49.1"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.4.0",
+    "@playwright/test": "^1.49.1",
+    "@types/node": "^24.10.1"
+  }
+}
