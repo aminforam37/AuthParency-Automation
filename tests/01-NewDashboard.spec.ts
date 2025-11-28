@@ -1,9 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { addResult, getResults } from '../resultsCollector'; 
+import { sendMail } from '../mail';
 
 let srNo = 1;
 //let testResults: {srNo: any, module: any, status: any, URL: any }[] = [];
 let status = 'Fail';
+let isPassed = true;
 
 const successMessageSelector = 'Login : Successfully Login'; 
 const errorMessageSelector = 'Login : Login failed'; 
@@ -41,6 +43,26 @@ test.beforeEach('Login', async ({ page })=> {
         console.log('Login status unknown: No success or error message displayed.');
         await page.waitForTimeout(1500); 
     }
+
+    console.log(page.url());
+    if (page.url().includes('https://demo.authparency.com/')) {
+
+        status = 'Pass';  
+        addResult({
+            srNo: '1',
+            module: 'Login',
+            status: 'Pass',
+            URL: '<a href="https://demo.authparency.com/">Login</a>'
+        });
+    } else {
+        addResult({
+            srNo: '1',
+            module: 'Login',
+            status: 'Fail',
+            URL: '<a href="https://demo.authparency.com/">Login</a>'
+        });
+    }
+ 
 
 });
 
@@ -80,6 +102,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
         if (dashboardNormalized === gridNormalized) {
         console.log('✅ The counts match!');
         } else {
+            isPassed = false;
         console.log(`❌ The counts do not match. Dashboard: ${dashboardNormalized}, Grid: ${gridNormalized}`);
         }
 
@@ -121,6 +144,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
    if (NoactionDB === gridNPN) {
        console.log('✅ The No Action Needed counts match!');
    } else {
+    isPassed = false;
        console.log(`❌ The No Action Needed counts do not match. Dashboard: ${NoactionDB}, Grid: ${gridNPN}`);
    }
    await page.waitForTimeout(1500);
@@ -154,6 +178,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
      if (dashboardCountNPA === gridcountNPA) {
          console.log('✅ The counts match!');
      } else {
+        isPassed = false;
          console.log(`❌ The counts do not match. Dashboard: ${dashboardCountNPA}, Grid: ${gridcountNPA}`);
      }
      await page.waitForTimeout(1500);
@@ -255,6 +280,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
     if (dashboardCountSubmitted === gridcountSubmitted) {
         console.log('✅ The Submitted counts match!');
     } else {
+        isPassed = false;
         console.log(`❌ The Submitted counts do not match. Dashboard: ${dashboardCountSubmitted}, Grid: ${gridcountSubmitted}`);
     }
     await page.waitForTimeout(1500);
@@ -296,6 +322,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
    if (AppealedDB === gridcountAppealed) {
        console.log('✅ The Appealed counts match!');
    } else {
+    isPassed = false;
        console.log(`❌ The Appealed counts do not match. Dashboard: ${AppealedDB}, Grid: ${gridcountAppealed}`);
    }
    await page.waitForTimeout(1500);
@@ -337,6 +364,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
    if (P2PDB === gridcountP2P) {
        console.log('✅ The Peer To Peer Review counts match!');
    } else {
+    isPassed = false;
        console.log(`❌ The Peer To Peer Review counts do not match. Dashboard: ${P2PDB}, Grid: ${gridcountP2P}`);
    }
    await page.waitForTimeout(1500);
@@ -378,6 +406,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
     if (DocsReqDB === gridcountDocsReq) {
     console.log('✅ The Docs Req counts match!');
     } else {
+    isPassed = false;
     console.log(`❌ The Docs Req counts do not match. Dashboard: ${DocsReqDB}, Grid: ${gridcountDocsReq}`);
     }
     await page.waitForTimeout(1500);
@@ -412,6 +441,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
      if (dashboardCountApproved === gridcountApproved) {
          console.log('✅ The Approved counts match!');
      } else {
+        isPassed = false;
          console.log(`❌ The Approved counts do not match. Dashboard: ${dashboardCountApproved}, Grid: ${gridcountApproved}`);
      }
      await page.waitForTimeout(3000);
@@ -445,6 +475,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
      if (dashboardCountDenied === gridcountDenied) {
          console.log('✅ The Denied counts match!');
      } else {
+        isPassed = false;
          console.log(`❌ The Denied counts do not match. Dashboard: ${dashboardCountDenied}, Grid: ${gridcountDenied}`);
      }
      await page.waitForTimeout(3000);
@@ -479,6 +510,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
      if (dashboardCountIP === gridcountIP) {
          console.log('✅ The In Progress counts match!');
      } else {
+        isPassed = false;
          console.log(`❌ The In Progress counts do not match. Dashboard: ${dashboardCountIP}, Grid: ${gridcountIP}`);
      }
      await page.waitForTimeout(1500);
@@ -522,6 +554,7 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
    if (AppealedDBIP === gridcountAppealedIP) {
        console.log('✅ The Appealed counts match!');
    } else {
+    isPassed = false;
        console.log(`❌ The Appealed counts do not match. Dashboard: ${AppealedDBIP}, Grid: ${gridcountAppealedIP}`);
    }
    await page.waitForTimeout(1500);
@@ -545,11 +578,13 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
     if (isTableVisible) {
     console.log("✅ Data loaded successfully.");
    } else {
+    isPassed = false;
     console.log("❌ Data failed to load.");
    
   }
   } catch (error) {
   const err = error as Error;
+  isPassed = false;
   console.log("❌ Error while waiting for table to become visible:", err.message);
 }
 
@@ -570,17 +605,20 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
         console.log("✅ Graph data loaded successfully.");
     
     } else {
+        isPassed = false;
         console.log("❌ Graph data failed to load.");
     
     }
     }catch (error) {
      const err = error as Error;
+     isPassed = false;
      console.log("❌ Error while waiting for graph to become visible:", err.message);
    }
 
     await page.waitForTimeout(1500);
-
-      if (page.url().includes('https://demo.authparency.com/')) {
+    //console.log(isPassed);
+    //   if (page.url().includes('https://demo.authparency.com/')) {
+        if (isPassed) {
 
         status = 'Pass';  
         addResult({
@@ -598,7 +636,9 @@ test('@Authparency: Dashboard Received ', async ({ page }) => {
         });
     }
 
-
+  const results = getResults();
+ await sendMail(results);
+ 
 
 });
 

@@ -67,24 +67,7 @@ test.beforeEach('Login', async ({ page })=> {
     }
 
        
-         if (page.url().includes('https://devlogin.authparency.com/orgs')) {
-
-        status = 'Pass';  
-        addResult({
-            srNo: '1',
-            module: 'Login',
-            status: 'Pass',
-            URL: '<a href="https://devlogin.authparency.com/orgs">Login</a>'
-        });
-    } else {
-        addResult({
-            srNo: '1',
-            module: 'Login',
-            status: 'Fail',
-            URL: '<a href="https://devlogin.authparency.com/orgs">Login</a>'
-        });
-    }
- 
+         
 });
 
 
@@ -204,13 +187,13 @@ test('@Authparency: CreatedOrder', async ({ page }) => {
     await page.locator("li[role='option']").nth(1).click();
 
     //Requesting Provider DEMO
-    await page.locator('input[name="reqname"]').pressSequentially('ACCIME', { delay: 100 }); // Types slower, like a user
+    await page.locator('input[name="reqname"]').pressSequentially('ACCIME', { delay: 50 }); // Types slower, like a user
     await page.waitForTimeout(1000); 
     await page.locator('#completionOptions > table > tbody > tr.suggestion').click();
     await page.waitForTimeout(1000); 
 
     //Rendering Provider
-    await page.locator('input[name="sername"]').pressSequentially('ACCIME', { delay: 100 }); 
+    await page.locator('input[name="sername"]').pressSequentially('ACCIME', { delay: 50 }); 
     await page.waitForTimeout(1000); 
     await page.locator('#completionOptions > table > tbody > tr.suggestion').click();
     await page.waitForTimeout(1000); 
